@@ -33,6 +33,4 @@
 
 BASENAME=Colossus237-BinaryCounter
 
-NO_BINSOURCE=1
-
 include ../Makefile.inc
