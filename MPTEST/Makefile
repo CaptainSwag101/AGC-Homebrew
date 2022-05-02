@@ -31,6 +31,7 @@
 # 		2019-07-27 MAS	Added a check step against the bugger words
 #				specified in NASA drawing 2021151B.
 
-BASENAME=MP-Testing
+BASENAME=MPTEST
+NO_BINSOURCE=yes
 
 include ../Makefile.inc
