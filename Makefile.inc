@@ -33,6 +33,9 @@
 # 
 #  5. To get yaYUL to generate HTML output, define `GEN_HTML`.
 
+# EDIT for AGC-Homebrew repository: set EXTRA_YAYUL_ARGS to "--hardware" automatically
+EXTRA_YAYUL_ARGS=--hardware
+
 # Used by the install target, whatever that's for.
 ifndef PREFIX
 PREFIX=/usr/local
