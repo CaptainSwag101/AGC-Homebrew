@@ -3303,7 +3303,7 @@ FREEDSP         XCH             Q
                 RELINT
                 TC              FREERET
 
-SHOTIME         OCT             1750
+SHOTIME         DEC		1000			# 10 SEC
 
 ## Page 207
                 SETLOC          ENDNVBSY        +1
@@ -3387,7 +3387,7 @@ TSTCON2         OCT             40777                   # DSPTAB+11D BITS 1-9
 TSTCON3         OCT             00114                   # CHAN 11  BITS 3,4,7
                                                         # UPLINK ACTIVITY, TEMP, OPERATOR ERROR.
 ## Page 209
-SHOLTS          OCT             764                     # 5 SEC
+SHOLTS          DEC		500                     # 5 SEC FOR LIGHTS TEST
 
 
 
