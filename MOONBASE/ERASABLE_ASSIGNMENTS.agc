@@ -1,7 +1,7 @@
 ### FILE="Main.annotation"
 ## Copyright:   Public domain.
 ## Filename:    ERASABLE_ASSIGNMENTS.agc
-## Purpose:     Part of the source code for AGC program Retread 50. 
+## Purpose:     Part of the source code for AGC program Retread 50.
 ## Assembler:   yaYUL
 ## Contact:     Ron Burkey <info@sandroid.org>.
 ## Website:     www.ibiblio.org/apollo/Restoration.html
@@ -254,7 +254,7 @@ MONSAVE         ERASE                                           # N/V CODE FOR M
 MONSAVE1        ERASE                                           # NOUNCADR FOR MONITOR(MATBS) =MONSAVE+1
 DSPTAB          ERASE           +11D                            # 0-10D, DISPLAY PANEL BUFF. 11D, C/S LTS.
 CADRSTOR        ERASE                                           # ENDIDLE STORAGE
-GRABLOCK        ERASE                                           # INTERNAL INTERLOCK FOR DISPLAY SYSTEM 
+GRABLOCK        ERASE                                           # INTERNAL INTERLOCK FOR DISPLAY SYSTEM
 NVQTEM          ERASE                                           # NVSUB STORAGE FOR CALLING ADDRESS
                                                                 # MUST = NVBNKTEM-1
 NVBNKTEM        ERASE                                           # NVSUB STORAGE FOR CALLING BANK
@@ -375,3 +375,11 @@ IGC             ERASE           +1
 ## Page 13
 LST1            ERASE           +4                              # DELTA TS.
 LST2            ERASE           +11D                            # 2CADR TASK ADDRESSES.
+
+
+## !! START OF CHANGE FOR MOONBASE !!
+# MOONBASE GAME ASSIGNMENTS
+
+LOCATION	ERASE						# HOLDS THE LOCATION ID NUMBER TO KEEP TRACK OF WHERE THE PLAYER IS.
+
+## !! END OF CHANGE FOR MOONBASE !!

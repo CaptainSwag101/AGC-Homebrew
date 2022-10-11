@@ -243,7 +243,7 @@
 
 
 
-                SETLOC          20000
+                SETLOC          20000			# START OF BANK 4 BUT WE HARDCODE ITS LOCATION
 
 GRABUSYB        TC              GRABUSY1                # STANDARD LEAD INS. DONT MOVE.
 NVSUBSYB        TC              NVSUBSY1
@@ -982,7 +982,7 @@ GODSPALM        TC              POSTJUMP
 #            P-S ARE THE SF CONSTANT1 CODE NUMBER
 #            N-S ARE THE SF CONSTANT2 CODE NUMBER     2 COMPONENT CASE
 #            P-S ARE THE SF CONSTANT1 CODE NUMBER
-#            P-S ARE THE SF CONSTANT1 CODE NUMBER      1 COMPONENT CASE
+#            P-S ARE THE SF CONSTANT1 CODE NUMBER     1 COMPONENT CASE
 
 # THERE IS ALSO AN INDIRECT ADDRESS TABLE(IDADDTAB) FOR MIXED CASE ONLY.
 # EACH ENTRY CONTAINS ONE ECADR.    IDADDREL IS THE RELATIVE ADDRESS OF
@@ -1005,7 +1005,7 @@ GODSPALM        TC              POSTJUMP
 # COMPONENT NUMBER IS GREATER THAN THE NUMBER OF COMPONENTS IN NOUN.
 # ALL MACHINE ADDRESS TO BE SPECIFIED NOUNS ARE 1 COMPONENT.
 # ONLY EXCEPTION IS NOUN 01 TO ALLOW OCTAL DISPLAYS AND LOADS OF
-# AN UNCONTOLLED NUMBER OF COMPONENTS.
+# AN UNCONTROLLED NUMBER OF COMPONENTS.
 
 
 
@@ -2685,7 +2685,7 @@ NNADTAB         OCT             00000                   # 00 NOT IN USE
                 OCT             40000                   # 06 SPECIFY MACHINE ADDRESS (GYRO DEG)
                 OCT             40000                   # 07 SPECIFY MACHINE ADDRESS (Y OPT DEG.)
                 OCT             77776                   # 10 CHANNEL TO BE SPECIFIED
-                OCT             00000                   # 11 SPARE
+                ECADR		LOCATION                # 11 MOONBASE LOCATION ID NUMBER
                 OCT             00000                   # 12 SPARE
                 OCT             00000                   # 13 SPARE
                 OCT             00000                   # 14 SPARE
@@ -2758,7 +2758,7 @@ NNTYPTAB        OCT             00000                   # 00 NOT IN USE
                 OCT             00302                   # 07 1COMP  Y OPT DEGREES
                 OCT             00000                   # 10 1COMP  OCTAL ONLY
 ## Page 196
-                OCT             00000                   # 11        SPARE
+                OCT             00140                   # 11 1COMP  WHOLE
                 OCT             00000                   # 12        SPARE
                 OCT             00000                   # 13        SPARE
                 OCT             00000                   # 14        SPARE
