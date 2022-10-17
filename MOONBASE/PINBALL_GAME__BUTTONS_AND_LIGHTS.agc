@@ -1857,7 +1857,7 @@ KILLMON         CAF             ZERO                    # ZERO MONSAVE AND TURN 
 
 
 
-MONDEL          OCT             144                     # FOR 1 SEC MONITOR INTERVALS
+MONDEL         	DEC		050                     # FOR 0.5 SEC MONITOR INTERVALS
 
 
 
@@ -3460,7 +3460,7 @@ TSTCON2         OCT             40650                   # DSPTAB+11D BITS 4,6,8,
                                                         # NO ATT, GIMBAL LOCK, TRACKER, PROG ALM.
 TSTCON3         OCT             00115                   # CHAN 11 BITS 1, 3, 4, 7.
                                                         # UPLINK ACTIVITY, TEMP, OPERATOR ERROR.
-SHOLTS          OCT             764                     # 5 SEC
+SHOLTS          DEC		500                     # 5 SEC
 
 
 

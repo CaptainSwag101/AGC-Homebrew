@@ -19,8 +19,8 @@
 T4RUPT          TS              LASTIMER                # (Comes here with +4 in A).
 
                 CA              T4TEMP                  # Check to see if T4TEMP is nonzero
-                EXTEND          
-                BZMF            T4RUPT2                 # If T4TEMP is nonzero, self-check has               
+                EXTEND
+                BZMF            T4RUPT2                 # If T4TEMP is nonzero, self-check has
                 TS              TIME4                   # set up an accelerated T4RUPT. Reschedule
                 CA              ZERO                    # using T4TEMP and zero it out.
                 TS              T4TEMP
@@ -42,17 +42,17 @@ NORMT4          CCS             DSRUPTSW                # GOES 7(-1)0.
                 XCH             BBANK
                 TCF             T4RUPTA
 
-LMPRESET        CAF             90MRUPT                 # 30 MS ON / 90 MS OFF.
+LMPRESET        CAF             90MRUPT                 # 30 MS ON / 90 MS OFF. (ALTERED TO CONSTANT 20 MS OFF FOR MOONBASE)
                 TCF             +2
 
-DSKYRSET        CAF             100MRUPT                # 20 MS ON / 100 MS OFF.
+DSKYRSET        CAF             100MRUPT                # 20 MS ON / 100 MS OFF.  (ALTERED TO CONSTANT 20 MS OFF FOR MOONBASE)
                 TS              TIME4
                 CAF             LNORMT4
                 TS              T4LOC
                 TCF             NOQBRSM
 
-90MRUPT         DEC             16375
-100MRUPT        DEC             16374
+90MRUPT         DEC             16382			# (OCTAL 37776, CONSTANT 20 MS FOR MOONBASE)
+100MRUPT        DEC             16382			# (OCTAL 37776, CONSTANT 20 MS FOR MOONBASE)
 LNORMT4         ADRES           NORMT4
 74K             OCT             74000
 
@@ -175,7 +175,7 @@ PROCEEDE	CA	IMODES33	# MONITIOR FOR PROCEED BUTTON
 		MASK	BIT14
 		CCS	A
 		TCF	T4JUMP		# WAS ON - NOW OFF
-		
+
 		CAF	CHRPRIO		# WAS OFF - NOW ON
 		TC	NOVAC
 		EBANK=	DSPCOUNT
