@@ -1,14 +1,18 @@
 ### FILE="Main.annotation"
 ## Copyright:   Public domain.
 ## Filename:    INTERRUPT_LEAD_INS.agc
-## Purpose:     Part of the source code for AGC program Retread 50. 
+## Purpose:     This program is designed to extensively test the Apollo Guidance Computer
+##              (specifically the LM instantiation of it). It is built on top of a heavily
+##              stripped-down Aurora 12, with all code ostensibly added by the DAP Group
+##              removed. Instead Borealis expands upon the tests provided by Aurora,
+##              including corrected tests from Retread 44 and tests from Ron Burkey's
+##              Validation.
 ## Assembler:   yaYUL
-## Contact:     Ron Burkey <info@sandroid.org>.
-## Website:     www.ibiblio.org/apollo/Restoration.html
-## Mod history: 2019-06-12 MAS  Recreated from Computer History Museum's
-##				physical core-rope modules.
-
-## Page 15
+## Contact:     Mike Stewart <mastewar1@gmail.com>.
+## Website:     www.ibiblio.org/apollo/index.html
+## Mod history: 2016-12-20 MAS  Created from Aurora 12 (with much DAP stuff removed).
+##              2017-01-15 MAS  Added TIME5 and TIME6 interrupts, and tweaked TIME4's
+##                              leadin a bit.
 
                 SETLOC          4000
                 
@@ -20,12 +24,12 @@
                 DXCH            ARUPT                   # T6RUPT
                 CAF             T6RPTBB
                 XCH             BBANK
-                TCF             RESUME      +3          # ***FIX LATER***
-
+                TCF             T6RUPT
+                
                 DXCH            ARUPT                   # T5RUPT
                 CAF             T5RPTBB
                 XCH             BBANK
-                TCF             RESUME      +3          # ***FIX LATER***
+                TCF             T5RUPT
                 
                 DXCH            ARUPT                   # T3RUPT
                 CAF             T3RPTBB
@@ -33,9 +37,9 @@
                 TCF             T3RUPT
                 
                 DXCH            ARUPT                   # T4RUPT
-                CAF             T4RPTBB
-                XCH             BBANK
+                CAF             FOUR
                 TCF             T4RUPT
+T4RPTBB         BBCON           T4RUPTA
 
                 DXCH            ARUPT                   # KEYRUPT1
                 CAF             KEYRPTBB
@@ -43,9 +47,9 @@
                 TCF             KEYRUPT1
                 
                 DXCH            ARUPT                   # KEYRUPT2
-                CAF             KEYRPTBB
+                CAF             MKRUPTBB
                 XCH             BBANK
-                TCF             KEYRUPT2
+                TCF             MARKRUPT
                 
                 DXCH            ARUPT                   # UPRUPT
                 CAF             UPRPTBB
@@ -55,40 +59,49 @@
                 DXCH            ARUPT                   # DOWNRUPT
                 CAF             DWNRPTBB
                 XCH             BBANK
-                TCF             RESUME      +3          # ***FIX LATER***
+                TCF             DODOWNTM
                 
-                RESUME                                  # RADAR RUPT    ****FIX LATER******
+                DXCH            ARUPT                   # RADAR RUPT
+                CAF             RDRPTBB
+                XCH             BBANK
+                TCF             RADAREAD
+                
+# TRAPS 31B AND 32 SHOULD NEVER BE SET. THEREFORE-
+# RUPT 10 WILL ALWAYS REFER TO THE HAND CONTROLLER LPD OR MINIMUM IMPULSE
+# USE. SEE GEORGE CHERRY FOR RATIONALE REGARDING THE AFORESAID.
 
-                SETLOC          4050
-## Page 16
-                RESUME                                  # HAND CONTROL RUPT   ***FIX LATER****
-
-
-
-                SETLOC          4054
-
+                DXCH            ARUPT                   # RUPT10
+                CAF             RPT10BB
+                XCH             BBANK
+                TCF             RESUME      +3          # ***FIX LATER***
                 
                 EBANK=          LST1                    # RESTART USES E0, E3
 GOBB            BBCON           GOPROG
 
                 EBANK=          TIME1
-T6RPTBB         BBCON           RESUME                  # ***FIX LATER***
+T5RPTBB         BBCON           T5RUPT
 
                 EBANK=          TIME1
-T5RPTBB         BBCON           RESUME                  # ***FIX LATER***
+T6RPTBB         BBCON           T6RUPT
 
                 EBANK=          LST1
 T3RPTBB         BBCON           T3RUPT
 
-                EBANK=          DSRUPTSW
-T4RPTBB         BBCON           T4RUPT
-
                 EBANK=          KEYTEMP1
 KEYRPTBB        BBCON           KEYRUPT1
 
+                EBANK=          AOTAZ
+MKRUPTBB        BBCON           MARKRUPT
+
 UPRPTBB         =               KEYRPTBB
 
-                EBANK=          TIME1
-DWNRPTBB        BBCON           RESUME                  # ***FIX LATER ***
+                EBANK=          DNTMBUFF
+DWNRPTBB        BBCON           DODOWNTM
+
+                EBANK=          RADMODES
+RDRPTBB         BBCON           RADAREAD
+
+                EBANK=          LST1
+RPT10BB         BBCON           RESUME
 
 ENDINTFF        EQUALS

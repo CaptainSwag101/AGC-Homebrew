@@ -1,14 +1,19 @@
 ### FILE="Main.annotation"
 ## Copyright:   Public domain.
 ## Filename:    KEYRUPT,_UPRUPT.agc
-## Purpose:     Part of the source code for AGC program Retread 50. 
+## Purpose:     This program is designed to extensively test the Apollo Guidance Computer
+##              (specifically the LM instantiation of it). It is built on top of a heavily
+##              stripped-down Aurora 12, with all code ostensibly added by the DAP Group
+##              removed. Instead Borealis expands upon the tests provided by Aurora,
+##              including corrected tests from Retread 44 and tests from Ron Burkey's
+##              Validation.
 ## Assembler:   yaYUL
-## Contact:     Ron Burkey <info@sandroid.org>.
-## Website:     www.ibiblio.org/apollo/Restoration.html
-## Mod history: 2019-06-12 MAS  Recreated from Computer History Museum's
-##				physical core-rope modules.
+## Contact:     Mike Stewart <mastewar1@gmail.com>.
+## Website:     www.ibiblio.org/apollo/index.html
+## Mod history: 2016-12-20 MAS  Created from Aurora 12 (with much DAP stuff removed).
 
-## Page 131
+                BANK            7
+        
 KEYRUPT1        TS              BANKRUPT
                 XCH             Q
                 TS              QRUPT
@@ -16,31 +21,16 @@ KEYRUPT1        TS              BANKRUPT
                 CAF             LOW5
                 EXTEND 
                 RAND            MNKEYIN
-KEYCOM          AD              BIT11
-                TS              TMKEYBUF
+KEYCOM          TS              RUPTREG4
                 CAF             CHRPRIO
                 TC              NOVAC
                 EBANK=          DSPCOUNT
                 2CADR           CHARIN
-
-                CA              LOW5
-                MASK            TMKEYBUF
+                CA              RUPTREG4
                 INDEX           LOCCTR
                 TS              MPAC                    # LEAVE 5 BIT KEY CDE IN MPAC FOR CHARIN
                 TC              RESUME
 
-
-
-KEYRUPT2        TS              BANKRUPT
-                XCH             Q
-                TS              QRUPT
-                TC              LODSAMPT                # TIME IS SNATCHED IN RUPT FOR NOUN 65.
-                CAF             LOW5
-                EXTEND
-                RAND            NAVKEYIN
-                TC              KEYCOM
-
-## Page 132
 # UPRUPT PROGRAM
 
 UPRUPT          TS              BANKRUPT
@@ -82,7 +72,6 @@ TSTUPLOK        CAF             BIT1
                 CCS             A
                 TC              RESUME                  # BIT1 OF UPLOCK = 1.
 ACCEPTUP        XCH             KEYTEMP1                # BIT1 OF UPLOCK = 0.
-                AD              BIT6
                 TC              KEYCOM
          
 TMFAIL2         TC              RESTORSR                # CODE IS BAD
@@ -90,13 +79,8 @@ TMFAIL2         TC              RESTORSR                # CODE IS BAD
                 MASK            UPLOCK                  # PUTTING 1 INTO BIT1 OF UPLOCK) UNTIL ELR
                 AD              BIT1                    # IS SENT UP UPLINK.
                 TS              UPLOCK
-                CAF             BIT9                    # SEND DOWN INDICATION THAT UPLINK HAS
-## Page 133
-                AD              BIT11                   # RECEIVED BAD CODE.
-                TS              TMKEYBUF
 TMFAIL1         TC              TMALM
                 TC              RESUME
-
 RESTORSR        XCH             KEYTEMP2
                 DOUBLE
                 TS              SR
@@ -115,20 +99,15 @@ SRGHT5          CS              SR
 UPTEST          AD              KEYTEMP1
                 CCS             A
                 TC              TMFAIL2
-                LOC             +1
+HI10            OCT             77740
                 TC              TMFAIL2
                 TC              Q
-
-HI10            OCT             77740
-UPBANK          EQUALS          EXECBANK                # IN SAME BANK AS EXEC.
-
-B12-1           OCT             3777
                 
 # UPACT IS TURNED OFF BY VBRELDSP, ALSO BY ERROR LIGHT RESET.       
-
-## Page 134
 # THE RECEPTION OF A BAD CODE BY UPLINK LOCKS OUT FURTHER UPLINK ACTIVITY
 # BY PLACING A 1 INTO BIT1 OF UPLOCK. BIT9 (ALONG WITH BIT11) OF TMKEYBUF
 # IS SET TO 1 TO SEND AN INDICATION OF THIS SITUATION DOWN THE DOWNLINK.
 # THE UPLINK INTERLOCK IS ALLOWED WHEN AN ERROR LIGHT RESET CODE IS SENT
 # UP THE UPLINK, OR WHEN A FRESH START IS PERFORMED.
+ 
+ ENDKRURS       EQUALS

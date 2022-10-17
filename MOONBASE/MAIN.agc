@@ -1,39 +1,54 @@
 ### FILE="Main.annotation"
-# Copyright:   	Public domain.
-# Filename:    	MAIN.agc
-# Purpose:     Part of the source code for AGC program Retread 50.
-# Assembler:   yaYUL
-# Contact:     Ron Burkey <info@sandroid.org>.
-# Website:     www.ibiblio.org/apollo/Restoration.html
-# Mod history: 2019-06-12 MAS  Created.
-#              2019-10-01 MAS  Updated for completed disassembly.
-#
-# MAIN.agc is a little different from the other Retread50 files
-# provided, in that it doesn't represent anything that appears
-# directly in the original source.  What we have done for
-# organizational purposes is to split the huge monolithic source
-# code into smaller, more manageable chunks--i.e., into individual
-# source files.  Those files are rejoined within this file as
-# "includes".  It just makes it a little easier to work with.  The
-# code chunks correspond to natural divisions into sub-programs.
-# The divisions are by the assembly listing itself.
+# Filename:     MAIN.agc
+# Purpose:      This program is designed to extensively test the Apollo Guidance Computer
+#               (specifically the LM instantiation of it). It is built on top of a heavily
+#               stripped-down Aurora 12, with all code ostensibly added by the DAP Group
+#               removed. Instead Borealis expands upon the tests provided by Aurora,
+#               including corrected tests from Retread 44 and tests from Ron Burkey's
+#               Validation.
+# Assembler:    yaYUL
+# Contact:      Mike Stewart <mastewar1@gmail.com>.
+# Website:      www.ibiblio.org/apollo/index.html
+# Mod history:  2016-12-20 MAS  Created from Aurora 12 (with much DAP stuff removed).
+#               2016-12-21 MAS  Added Retread instruction checks.
+#               2017-01-15 MAS  Added a file for extended self-tests.
+#               2017-03-27 RSB  Made this header ##-style rather than #-style.  (Headers
+#                               in MAIN.agc are always #-style.)
 
-# Source file name                       Starting Page
-# ----------------                       -------------
+# Source file name
+# ----------------
 
-$VERB_AND_NOUN_INFORMATION.agc         # 1
-$ERASABLE_ASSIGNMENTS.agc              # 5
-$INPUT_OUTPUT_CHANNELS.agc             # 14
-$INTERRUPT_LEAD_INS.agc                # 15
-$LIST-PROCESSING_INTERPRETER.agc       # 17
-$INTER-BANK_COMMUNICATION.agc          # 105
-$EXECUTIVE.agc                         # 107
-$WAITLIST.agc                          # 118
-$FRESH_START_AND_RESTART.agc           # 124
-$T4RUPT_PROGRAM.agc                    # 128
-$KEYRUPT,_UPRUPT.agc                   # 131
-$PINBALL_GAME__BUTTONS_AND_LIGHTS.agc  # 135
-$AGC_BLK2_INSTRUCTION_CHECK.agc        # 210
-$EXTENDED_VERBS_FOR_MODING.agc         # 243
-
-#Assembly-tables                       # 244+
+$ASSEMBLY_AND_OPERATION_INFORMATION.agc
+$ERASABLE_ASSIGNMENTS.agc
+$INPUT_OUTPUT_CHANNELS.agc
+$INTERRUPT_LEAD_INS.agc
+$INTER-BANK_COMMUNICATION.agc
+$INTERPRETER.agc
+$SINGLE_PRECISION_SUBROUTINES.agc
+$EXECUTIVE.agc
+$WAITLIST.agc
+$PHASE_TABLE_MAINTENANCE.agc
+$FRESH_START_AND_RESTART.agc
+$T4RUPT_PROGRAM.agc
+$IMU_MODE_SWITCHING_ROUTINES.agc
+$IMU_COMPENSATION_PACKAGE.agc
+$AOTMARK.agc
+$RADAR_LEAD-IN_ROUTINES.agc
+$RADAR_TEST_PROGRAMS.agc
+$EXTENDED_VERBS.agc
+$KEYRUPT,_UPRUPT.agc
+$PINBALL_GAME__BUTTONS_AND_LIGHTS.agc
+$ALARM_AND_ABORT.agc
+$DOWN-TELEMETRY_PROGRAM.agc
+$AGC_BLOCK_TWO_SELF-CHECK.agc
+$AGC_BLK2_INSTRUCTION_CHECK.agc
+$AGC_BLOCK_TWO_EXTENDED_TESTS.agc
+$INFLIGHT_ALIGNMENT_ROUTINES.agc
+$RTB_OP_CODES.agc
+$LEM_FLIGHT_CONTROL_SYSTEM_TEST.agc
+$IMU_PERFORMANCE_TESTS_1.agc
+$IMU_PERFORMANCE_TESTS_2.agc
+$IMU_PERFORMANCE_TESTS_3.agc
+$OPTIMUM_PRELAUNCH_ALIGNMENT_CALIBRATION.agc
+$AGC_VERSION_CHECK.agc
+$SUM_CHECK_END_OF_BANK_MARKERS.agc

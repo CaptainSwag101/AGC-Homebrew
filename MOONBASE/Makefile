@@ -1,20 +1,15 @@
 # Copyright:	Public domain.
 # Filename:	Makefile
-# Purpose:	Makefile for Retread 50.
+# Purpose:	Makefile for Borealis.
 # Contact:	Ron Burkey <info@sandroid.org>.
-# Website:	www.ibiblio.org/apollo/index.html
-# Mod history:	2019-06-12 MAS  Created.
-#		2019-06-17 RSB	Tweaked.
-#		2022-10-10 JAP	Repurposed for the "Moonbase" proof-of-concept game I came up with.
+# Website:	http://www.ibiblio.org/apollo
+# Mod history:	2017-01-30 MAS	Cleaned up from Aurora12 Makefile.
+#             	2017-06-28 MAS	Converted from BLK2 to AGC.
 
-BASENAME=MOONBASE
+BASENAME=Moonbase
+EXTRA_YAYUL_ARGS+=--parity --honeywell
 
-## Retread was built for the BLK2 target
-EXTRA_YAYUL_ARGS+=--blk2 --early-sbank --no-checksums --parity --honeywell
-
-# Retread does not have checksums, so disable them.
-OCT2BIN_ARGS+=--no-checksums
-
+# Borealis, being a custom program, will never have a binsource.
 NO_BINSOURCE=yes
 
 include ../Makefile.inc

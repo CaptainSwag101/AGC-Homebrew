@@ -1,16 +1,18 @@
 ### FILE="Main.annotation"
 ## Copyright:   Public domain.
 ## Filename:    WAITLIST.agc
-## Purpose:     Part of the source code for AGC program Retread 50. 
+## Purpose:     This program is designed to extensively test the Apollo Guidance Computer
+##              (specifically the LM instantiation of it). It is built on top of a heavily
+##              stripped-down Aurora 12, with all code ostensibly added by the DAP Group
+##              removed. Instead Borealis expands upon the tests provided by Aurora,
+##              including corrected tests from Retread 44 and tests from Ron Burkey's
+##              Validation.
 ## Assembler:   yaYUL
-## Contact:     Ron Burkey <info@sandroid.org>.
-## Website:     www.ibiblio.org/apollo/Restoration.html
-## Mod history: 2019-06-12 MAS  Recreated from Computer History Museum's
-##				physical core-rope modules.
-##              2021-05-30 ABS  Removed DLY2 symbol not present in
-##                              Retread 44 or Aurora 12.
-
-## Page 118
+## Contact:     Mike Stewart <mastewar1@gmail.com>.
+## Website:     www.ibiblio.org/apollo/index.html
+## Mod history: 2016-12-20 MAS  Created from Aurora 12 (with much DAP stuff removed).
+##              2017-01-15 MAS  Added setting of LASTIMER in T3RUPT.
+##		2017-02-09 RSB	Comment-text fixes identified in proofing Artemis 72
 
 # GROUNDRULE....DELTA T SHOULD NOT EXCEED 12000 (= 2 MINUTES)
 
@@ -18,17 +20,17 @@
 
                 EBANK=  LST1            # TASK LISTS IN SWITCHED E BANK.
 
-WAITLIST        XCH     Q               #  SAVE DELTA T IN Q AND RETURN IN
+WAITLIST        XCH     Q               # SAVE DELTA T IN Q AND RETURN IN
                 TS      WAITEXIT        # WAITEXIT.
                 EXTEND
                 INDEX   A
                 DCA     0               # PICK UP 2CADR OF TASK.
                 TS      WAITADR         # BBCON WILL REMAIN IN L.
-                CAF     WAITBB 
+DLY2            CAF     WAITBB          # ENTRY FROM FIXDELAY AND VARDELAY.
                 XCH     BBANK
                 TCF     WAIT2
 
-#          RETURN TO CALLER AFTER TASK INSERTION:
+# RETURN TO CALLER AFTER TASK INSERTION:
 
 LVWTLIST        CA      WAITBANK
                 TS      BBANK
@@ -37,14 +39,42 @@ LVWTLIST        CA      WAITBANK
 
 WAITBB          BBCON   WAIT2
 
+# RETURN TO CALLER +2 AFTER WAITING DT SPECIFIED AT CALLER +1.
+
+FIXDELAY        INDEX   Q               # BOTH ROUTINES MUST BE CALLED UNDER
+                CAF     0               # WAITLIST CONTROL AND TERMINATE THE TASK
+                INCR    Q               # IN WHICH THEY WERE CALLED.
+
+# RETURN TO CALLER +1 AFTER WAITING THE DT AS ARRIVING IN A.
+
+VARDELAY        XCH     Q               # DT TO Q.  TASK ADRES TO WAITADR.
+                TS      WAITADR
+                CA      BBANK           # BBANK IS SAVED DURING DELAY.
+                TS      L
+                CAF     DELAYEX
+                TS      WAITEXIT        # GO TO TASKOVER AFTER TASK ENTRY.
+                TCF     DLY2
+
+DELAYEX         TCF     TASKOVER -2     # RETURNS TO TASKOVER
+
+
 # ENDTASK MUST BE ENTERED IN FIXED-FIXED SO IT IS DISTINGUISHABLE BY ITS ADRES ALONE.
 
 ENDTASK         -2CADR  SVCT3
 
-SVCT3           TCF     TASKOVER
+SVCT3           CCS     STATE   +2      # DRIFT FLAG
+                TCF     TASKOVER
+                TCF     TASKOVER
+                TCF     +1
 
-## Page 119
-#          BEGIN TASK INSERTION.
+                CAF     PRIO35          # COMPENSATE FOR NBD COEFFICIENTS ONLY
+                TC      NOVAC           #     ENABLE EVERY 81.93 SECONDS
+                2CADR   NBDONLY         # EBANK IS SET TO 3
+
+                TCF     TASKOVER
+
+
+# BEGIN TASK INSERTION.
 
                 SETLOC  ENDEXECS
 
@@ -52,14 +82,14 @@ WAIT2           TS      WAITBANK        # BBANK OF CALLING PROGRAM.
                 CS      TIME3
                 AD      +1              # CCS  A  = + 1/4
                 CCS     A               # TEST  1/4 - C(TIME3).  IF POSITIVE,
-#         IT MEANS THAT TIME3 OVERFLOW HAS OCCURRED PRIOR TO CS  TIME3 AND THAT
-#         C(TIME3) = T - T1, INSTEAD OF 1.0 - (T1 - T).  THE FOLLOWING FOUR
-#         ORDERS SET C(A) = TD - T1 + 1 IN EITHER CASE.
+                                        # IT MEANS THAT TIME3 OVERFLOW HAS OCCURRED PRIOR TO CS  TIME3 AND THAT
+                                        # C(TIME3) = T - T1, INSTEAD OF 1.0 - (T1 - T).  THE FOLLOWING FOUR
+                                        # ORDERS SET C(A) = TD - T1 + 1 IN EITHER CASE.
 
                 AD      OCT40001        # OVERFLOW HAS OCCURRED.  SET C(A) =
                 CS      A               # T - T1 + 3/4 - 1
 
-# NORMAL CASE (C(A) MINUS) YIELDS SAME C(A)  -(-(1.0-(T1-T))+1/4)-1
+# NORMAL CASE (C(A) MINUS) YIELDS SAME C(A)  -(-(1.0-(T1 - T))+1/4)-1
 
                 AD      OCT50001
                 AD      Q               # RESULT = TD - T1 + 1.
@@ -85,12 +115,15 @@ WAIT2           TS      WAITBANK        # BBANK OF CALLING PROGRAM.
                 EXTEND                  # ZERO INDEX Q.
                 QXCH    7               # (ZQ)
 
-## Page 120
+
 WTLST4          XCH     LST1
                 XCH     LST1    +1
                 XCH     LST1    +2
                 XCH     LST1    +3
                 XCH     LST1    +4
+                XCH     LST1    +5
+                XCH     LST1    +6
+                XCH     LST1    +7
 
                 CA      WAITADR         # (MINOR PART OF TASK CADR HAS BEEN IN L.)
                 INDEX   Q
@@ -102,13 +135,15 @@ WTLST4          XCH     LST1
                 DXCH    LST2    +6
                 DXCH    LST2    +8D
                 DXCH    LST2    +10D    # AT END, CHECK THAT C(LST2 +10) IS STD
+                DXCH    LST2    +12D
+                DXCH    LST2    +14D
+                DXCH    LST2    +16D
                 AD      ENDTASK         #   END ITEM, AS CHECK FOR EXCEEDING
                                         #   THE LENGTH OF THE LIST.
                 EXTEND                  # DUMMY TASK ADRES SHOULD BE IN FIXED-
                 BZF     LVWTLIST        # FIXED SO ITS ADRES ALONE DISTINGUISHES
                 TCF     WTABORT         # IT.
 
-## Page 121
 
 WTLST5          CCS     A               # TEST TD - T2 + 1
                 AD      LST1    +1
@@ -139,25 +174,47 @@ WTLST5          CCS     A               # TEST TD - T2 + 1
                 OCT     4
 
  +4             CCS     A               # TEST TD - T6 + 1
-                TCF     WTABORT
-OCT50001        OCT     50001
+                AD      LST1    +5
+                TCF     +4
                 AD      ONE
                 TC      WTLST2
                 OCT     5
 
-WTABORT         TC                      # LIST OVERFLOW.
+ +4             CCS     A               # TEST TD - T7 + 1
+                AD      LST1    +6
+                TCF     +4
+                AD      ONE
+                TC      WTLST2
+                OCT     6
 
 
-## Page 122
+ +4             CCS     A
+                AD      LST1    +7
+                TCF     +4
+                AD      ONE
+                TC      WTLST2
+                OCT     7
+
+ +4             CCS     A
+WTABORT         TC      ABORT           # NO ROOM IN THE INN.
+                OCT     1203
+
+                AD      ONE
+                TC      WTLST2
+                OCT     10
+
+OCT50001        OCT     50001
+
+
 # THE ENTRY TO WTLST2 JUST PRECEDING OCT  N  IS FOR T  LE TD LE T   -1.
 #                                                    N           N+1
-
+#
 # (LE MEANS LESS THAN OR EQUAL TO).  AT ENTRY, C(A) = -(TD - T   + 1)
 #                                                             N+1
-
+#
 # THE LST1 ENTRY -(T   - T +1) IS TO BE REPLACED BY -(TD - T  + 1), AND
 #                   N+1   N                                 N
-
+#
 # THE ENTRY -(T   - TD + 1) IS TO BE INSERTED IMMEDIATELY FOLLOWING.
 #              N+1
 
@@ -175,16 +232,14 @@ WTLST2          TS      WAITTEMP        #     C(A) = -(TD - T   + 1)
                 INDEX   Q
                 TCF     WTLST4
 
-ENDWAITS        EQUALS                  # LAST SWITCHABLE LOCATION.
-
 # C(TIME3)  = 1.0 - (T1 - T)
-
+#
 # C(LST1  ) = - (T2 - T1) + 1
 # C(LST1+1) = - (T3 - T2) + 1
 # C(LST1+2) = - (T4 - T3) + 1
 # C(LST1+3) = - (T5 - T4) + 1
 # C(LST1+4) = - (T6 - T5) + 1
-
+#
 # C(LST2   ) = 2CADR  TASK1
 # C(LST2+2 ) = 2CADR  TASK2
 # C(LST2+4 ) = 2CADR  TASK3
@@ -192,16 +247,20 @@ ENDWAITS        EQUALS                  # LAST SWITCHABLE LOCATION.
 # C(LST2+8 ) = 2CADR  TASK5
 # C(LST2+10) = 2CADR  TASK6
 
-## Page 123
-#          ENTERS HERE ON T3 RUPT TO DISPATCH WAITLISTED TASK.
 
-                SETLOC  SVCT3   +1
+# ENTERS HERE ON T3 RUPT TO DISPATCH WAITLISTED TASK.
 
 T3RUPT          TS      BANKRUPT
                 EXTEND
                 QXCH    QRUPT
 
+                CAF     THREE
+                TS      LASTIMER
+
 T3RUPT2         CAF     NEG1/2          # DISPATCH WAITLIST TASK.
+                XCH     LST1    +7
+                XCH     LST1    +6
+                XCH     LST1    +5
                 XCH     LST1    +4      # 1.  MOVE UP LST1 CONTENTS, ENTERING
                 XCH     LST1    +3      #     A VALUE OF 1/2 +1 AT THE BOTTOM
                 XCH     LST1    +2      #     FOR T6-T5, CORRESPONDING TO THE
@@ -215,6 +274,9 @@ T3RUPT2         CAF     NEG1/2          # DISPATCH WAITLIST TASK.
 
                 EXTEND                  # DISPATCH TASK.
                 DCS     ENDTASK
+                DXCH    LST2    +16D
+                DXCH    LST2    +14D
+                DXCH    LST2    +12D
                 DXCH    LST2    +10D
                 DXCH    LST2    +8D
                 DXCH    LST2    +6
@@ -224,9 +286,12 @@ T3RUPT2         CAF     NEG1/2          # DISPATCH WAITLIST TASK.
 
                 DTCB
 
+ENDWAITS        EQUALS
 
 
-# RETURN, AFTER EXECUTION OF TIME3 OVERFLOW TASK.
+# RETURN, AFTER EXECUTION OF T3 OVERFLOW TASK:
+
+                BLOCK   02
 
 TASKOVER        CCS     RUPTAGN         # IF +1 RETURN TO T3RUPT, IF -0 RESUME.
                 CAF     WAITBB
@@ -235,9 +300,9 @@ TASKOVER        CCS     RUPTAGN         # IF +1 RETURN TO T3RUPT, IF -0 RESUME.
 
 RESUME          EXTEND
                 QXCH    QRUPT
-                CA      BANKRUPT
+NOQRSM          CA      BANKRUPT
                 TS      BBANK
-                DXCH    ARUPT
+NOQBRSM         DXCH    ARUPT
                 RESUME
 
 ENDWAITF        EQUALS                  # LAST FIXED-FIXED LOCATION OF T3RUPT.
